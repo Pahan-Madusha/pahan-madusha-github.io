@@ -18,5 +18,4 @@
     {"code": "RUB", "name": "Russian Ruble"},
     {"code": "BRL", "name": "Brazilian Real"},
     {"code": "ZAR", "name": "South African Rand"}
-    // Add more currencies as needed
 ]
