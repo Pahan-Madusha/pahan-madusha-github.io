@@ -14,6 +14,7 @@
             align-items: center;
             height: 100vh;
             background-color: #f0f0f0;
+            transition: background-color 0.3s ease;
         }
 
         .container {
@@ -21,6 +22,13 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
         }
 
         input, select {
@@ -30,6 +38,7 @@
             border: 1px solid #ccc;
             width: 100%;
             box-sizing: border-box;
+            transition: border-color 0.3s ease;
         }
 
         button {
@@ -39,6 +48,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
@@ -49,6 +59,8 @@
             font-size: 18px;
             font-weight: bold;
             margin-top: 10px;
+            text-align: center;
+            transition: color 0.3s ease;
         }
     </style>
 </head>
@@ -56,29 +68,43 @@
     <div class="container">
         <h2>Currency Converter</h2>
         <input type="number" id="amount" placeholder="Enter amount...">
-        <select id="fromCurrency">
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-            <option value="JPY">JPY</option>
-        </select>
-        <select id="toCurrency">
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-            <option value="JPY">JPY</option>
-        </select>
+        <select id="fromCurrency"></select>
+        <select id="toCurrency"></select>
         <button onclick="convertCurrency()">Convert</button>
         <div id="result"></div>
     </div>
 
     <script>
+        // Fetch list of currencies
+        fetch('https://api.exchangerate-api.com/v1/currencies')
+            .then(response => response.json())
+            .then(data => {
+                const currencies = Object.keys(data);
+                const fromCurrencySelect = document.getElementById('fromCurrency');
+                const toCurrencySelect = document.getElementById('toCurrency');
+
+                currencies.forEach(currency => {
+                    const option1 = document.createElement('option');
+                    option1.value = currency;
+                    option1.textContent = currency;
+                    fromCurrencySelect.appendChild(option1);
+
+                    const option2 = document.createElement('option');
+                    option2.value = currency;
+                    option2.textContent = currency;
+                    toCurrencySelect.appendChild(option2);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
         function convertCurrency() {
             const amount = document.getElementById('amount').value;
             const fromCurrency = document.getElementById('fromCurrency').value;
             const toCurrency = document.getElementById('toCurrency').value;
 
-            fetch(`https://api.exchangerate-api.com/v4/latest/${fromCurrency}`)
+            fetch(`https://api.exchangerate-api.com/v1/latest/${fromCurrency}`)
                 .then(response => response.json())
                 .then(data => {
                     const exchangeRate = data.rates[toCurrency];
