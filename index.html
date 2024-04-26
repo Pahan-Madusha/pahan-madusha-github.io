@@ -68,6 +68,7 @@
     <div class="container">
         <h2>Currency Converter</h2>
         <input type="number" id="amount" placeholder="Enter amount...">
+        <input type="text" id="searchCurrency" onkeyup="searchCurrencies()" placeholder="Search for a currency...">
         <select id="fromCurrency"></select>
         <select id="toCurrency"></select>
         <button onclick="convertCurrency()">Convert</button>
@@ -75,23 +76,23 @@
     </div>
 
     <script>
-        // Fetch list of currencies
-        fetch('https://api.exchangerate-api.com/v1/currencies')
+        // Fetch list of currencies from JSON file
+        fetch('currencies.json')
             .then(response => response.json())
             .then(data => {
-                const currencies = Object.keys(data);
+                const currencies = data;
                 const fromCurrencySelect = document.getElementById('fromCurrency');
                 const toCurrencySelect = document.getElementById('toCurrency');
 
                 currencies.forEach(currency => {
                     const option1 = document.createElement('option');
-                    option1.value = currency;
-                    option1.textContent = currency;
+                    option1.value = currency.code;
+                    option1.textContent = currency.name;
                     fromCurrencySelect.appendChild(option1);
 
                     const option2 = document.createElement('option');
-                    option2.value = currency;
-                    option2.textContent = currency;
+                    option2.value = currency.code;
+                    option2.textContent = currency.name;
                     toCurrencySelect.appendChild(option2);
                 });
             })
@@ -104,16 +105,24 @@
             const fromCurrency = document.getElementById('fromCurrency').value;
             const toCurrency = document.getElementById('toCurrency').value;
 
-            fetch(`https://api.exchangerate-api.com/v1/latest/${fromCurrency}`)
-                .then(response => response.json())
-                .then(data => {
-                    const exchangeRate = data.rates[toCurrency];
-                    const convertedAmount = amount * exchangeRate;
-                    document.getElementById('result').innerText = `${amount} ${fromCurrency} = ${convertedAmount.toFixed(2)} ${toCurrency}`;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            // Implement currency conversion logic
+            // ...
+        }
+
+        function searchCurrencies() {
+            const input = document.getElementById('searchCurrency');
+            const filter = input.value.toUpperCase();
+            const select = document.getElementById('fromCurrency');
+            const options = select.getElementsByTagName('option');
+
+            for (let i = 0; i < options.length; i++) {
+                const txtValue = options[i].textContent || options[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
+            }
         }
     </script>
 </body>
